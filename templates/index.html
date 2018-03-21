@@ -1,0 +1,96 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<title>textGears</title>
+	<style type="text/css">
+		.green{
+			color: green;
+		}
+		.red{
+			color:red;
+		}
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+	
+</script>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Essay Editing</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">Page 1</a></li>
+      <li><a href="#">Page 2</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-8">
+			<div class="form-group">
+			  <label for="essay">Essay:</label>
+			  <textarea class="form-control" rows="5" id="essay">My relative are a doctor, but my father is a angeneer. I has a gun.</textarea>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<button type="button" class="btn btn-danger" onclick="check();">Check</button>
+			<img src="https://textgears.com/assets/v1/img/ani/gear1_w.gif" id="preload">
+			<br>
+			<div id="result"></div>
+			<!-- <div class="col-md-2"></div> -->
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	function check(){
+		var essay = $("#essay").val();
+  		$('#preload').show();
+  		$.ajax({
+			  type: "GET",
+			  url: "essay/",
+			  data: {'essay' : essay},
+			  dataType:'json',
+			  success: function(response, status){
+			  	$('#preload').hide();
+			    var o = response.result
+			    // console.log(o)
+			    // console.log(o.errors)
+			    var tab = '<table class="table-striped">';
+			    for(var j = 0; j < o.errors.length; ++j){
+					var better = '';
+					for(var i = 0; i < o.errors[j].better.length; ++i){
+						better += '<span class="green">' + o.errors[j].better[i] + '</span><br />';
+						if( i>2) break;
+					}
+					tab +=
+					'<tr>\
+						<td><span class="red">'+o.errors[j].bad+'</span></td>\
+						<td>&rarr;</td>\
+						<td>' + better + '</td>\
+					</tr>';
+				}
+				tab += "</table>";
+			    $("#result").html(tab);
+			  },
+			  error: function(errMsg){
+			  	console.log(errMsg);
+			  }
+  		});
+	};
+$(document).ready(function() {
+	$('#preload').hide();
+});
+</script>
+</body>
+</html>

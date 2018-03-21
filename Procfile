@@ -1,0 +1,1 @@
+web: gunicorn textGears.wsgi --log-file -
